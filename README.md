@@ -114,3 +114,42 @@ FROM film
 WHERE description LIKE '%Student%'
 ORDER BY title ASC
 ```
+- Найти все фильмы продолжительностью более 3 часов и получите их название, год выпуска и продолжительность, отсортированные по продолжительности в порядке возрастания.
+```sql
+SELECT title, release_year, length
+FROM film
+WHERE length > 180
+ORDER BY length ASC
+```
+- Найти клиентов которые встречали друг друга в одном из пунктов проката. Вывести таблицу с полями meet_time - согласно времени аренды, store_id, customers список встречавшихся клиентов в формате JOHN SHOW,DAENERYS TARGARYEN - в порядке их фамилий. Результирующую таблицу отсортируйте по времени встречи и номеру пункта проката
+(Клиенты встречались если брали в аренду фильмы в одном отделении в одно время.)
+```sql
+SELECT 
+    r.rental_date AS meet_time,
+    s.store_id,
+    GROUP_CONCAT(CONCAT(c.first_name, ' ', c.last_name) ORDER BY c.last_name SEPARATOR ', ') AS customers
+FROM 
+    rental r
+JOIN 
+    customer c ON r.customer_id = c.customer_id
+JOIN 
+    staff s ON r.staff_id = s.staff_id
+GROUP BY 
+    r.rental_date, s.store_id
+HAVING 
+    COUNT(c.customer_id) > 1
+ORDER BY 
+    meet_time, store_id;
+```
+- Найти клиентов чьё имя является фамилией другого клиента. Вывести таблицу с полями customer_id, first_name, last_name для первого клиента и такие же поля customer_id, first_name, last_name для второго. Отсортиь по customer_id первого клиента.
+```sql
+SELECT
+c1.customer_id, c1.first_name, c1.last_name,
+c2.customer_id, c2.first_name, c2.last_name
+FROM
+customer c1
+JOIN
+customer c2 ON c1.first_name = c2.last_name
+ORDER BY
+c1.customer_id
+```
