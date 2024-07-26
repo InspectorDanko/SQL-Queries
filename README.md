@@ -121,6 +121,66 @@ FROM film
 WHERE length > 180
 ORDER BY length ASC
 ```
+- Написать SQL-запрос, чтобы получить список фильмов, отсутствующих в прокате (таблица inventory). Отобразить названия этих фильмов в столбце с названием film_title в алфавитном порядке. Использовать для решения задачи соединение таблиц.
+```sql
+SELECT 
+    f.title AS film_title
+FROM 
+    film f
+LEFT JOIN 
+    inventory i ON f.film_id = i.film_id
+WHERE 
+    i.film_id IS NULL
+ORDER BY 
+    f.title;
+```
+- Найдити фильмы из базы данных Sakila, для которых нет записей об учавствоваших в них актёрах. Вывести результирующую с полями title, release_year отсортированных по названию фильма.
+```sql
+SELECT film.title, film.release_year
+FROM film
+LEFT JOIN film_actor ON film.film_id = film_actor.film_id
+WHERE film_actor.actor_id IS NULL
+ORDER BY film.title
+```
+- Напиcать SQL-запрос, который выводит названия всех фильмов и их категорий из базы данных Sakila.
+```sql
+SELECT film.title, category.name
+FROM film
+JOIN film_category ON film.film_id = film_category.film_id
+JOIN category ON film_category.category_id = category.category_id
+```
+- Написать SQL-запрос для получения списка языков из таблицы language, на которых нет доступных фильмов. Представить результат в таблице с одним столбцом - language, отсортированным по алфавиту. Использовать для решения задачи соединение таблиц.
+```sql
+SELECT 
+    l.name AS language
+FROM 
+    language l
+LEFT JOIN 
+    film f ON l.language_id = f.language_id
+WHERE 
+    f.language_id IS NULL
+ORDER BY 
+    l.name;
+```
+- Извлечь имя и домен из адресов электронной почты клиентов в базе данных Sakila. Написать запрос, возвращающий три столбца: email, address – часть адреса электронной почты перед знаком «@» и domain — часть после «@». Отсортировать результат по полю email.
+```sql
+SELECT
+email,
+SUBSTRING_INDEX(email, '@', 1) AS address,
+SUBSTRING_INDEX(email, '@', -1) AS domain
+FROM
+sakila.customer
+ORDER BY
+email
+```
+- Получить определения столбцов таблицы address.
+```sql
+SHOW COLUMNS FROM address
+```  
+- Получить список индексов таблицы film и их определений.
+```sql
+SHOW INDEX from film;
+```
 - Найти клиентов которые встречали друг друга в одном из пунктов проката. Вывести таблицу с полями meet_time - согласно времени аренды, store_id, customers список встречавшихся клиентов в формате JOHN SHOW,DAENERYS TARGARYEN - в порядке их фамилий. Результирующую таблицу отсортируйте по времени встречи и номеру пункта проката
 (Клиенты встречались если брали в аренду фильмы в одном отделении в одно время.)
 ```sql
